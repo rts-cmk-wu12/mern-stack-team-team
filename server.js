@@ -1,14 +1,21 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
 import ViteExpress from 'vite-express';
-import { MongoClient } from "mongodb";
-  
-const CONNECTION_URI = "mongodb+srv://claraqvistrichards:FRz1E3OVRZhyHcZ5@cluster0.6wnev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-  
-const client = new MongoClient(CONNECTION_URI);
-const database = client.db('sample_mflix');
-
+import blogRoutes from './routes/blogRoutes.js';
 
 const server = express();
+
+server.use(express.json());
+server.use(cors());
+
+const mongoURI = 'mongodb+srv://claraqvistrichards:LL6FXFUvPtJ5PFbD@cluster0.6wnev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+mongoose
+    .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.error(err));
+
+server.use('/api', blogRoutes);
 
 server.get("/message", (_, res) => res.send("Hello from express!"));
 
